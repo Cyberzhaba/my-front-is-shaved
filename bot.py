@@ -22,22 +22,25 @@ class Bot:
 
         def get_step(msg):
             if msg.text == '<= Назад в меню':
-                main_menu(msg)
-            self.bot.send_message(msg.chat.id, 'Мне похй я шагаю от тебя')
-            self.bot.send_message(msg.chat.id, 'Поздравляю я все добавил', reply_markup=self.go_back)
+                main_menu(msg, True)
+            else:
+                self.bot.send_message(msg.chat.id, 'Мне похй я шагаю от тебя')
+                self.bot.send_message(msg.chat.id, 'Поздравляю я все добавил', reply_markup=self.go_back)
 
 
         def get_max_bid(msg):
             if msg.text == '<= Назад в меню':
-                main_menu(msg)
-            message = self.bot.send_message(msg.chat.id, 'Да, мне побать, поставлю мин ставку - весь твой бюджет', reply_markup=self.go_back)
-            self.bot.register_next_step_handler(message, get_step)
+                main_menu(msg, True)
+            else:
+                message = self.bot.send_message(msg.chat.id, 'Да, мне побать, поставлю мин ставку - весь твой бюджет', reply_markup=self.go_back)
+                self.bot.register_next_step_handler(message, get_step)
 
         def get_link(msg):
             if msg.text == '<= Назад в меню':
-                main_menu(msg)
-            message = self.bot.send_message(msg.chat.id, 'Ага спасибо, я ее все равно не запомнил, я же сказал, мне похуй', reply_markup=self.go_back)
-            self.bot.register_next_step_handler(message, get_max_bid)
+                main_menu(msg, True)
+            else:
+                message = self.bot.send_message(msg.chat.id, 'Ага спасибо, я ее все равно не запомнил, я же сказал, мне похуй', reply_markup=self.go_back)
+                self.bot.register_next_step_handler(message, get_max_bid)
 
         @self.bot.message_handler(commands=['start'])
         def main_commands(msg):
@@ -50,7 +53,10 @@ class Bot:
                                       reply_markup=self.main_menu_keyb)
 
         @self.bot.message_handler(func=lambda msg: True)
-        def main_menu(msg):
+        def main_menu(msg, is_back=False):
+            if is_back:
+                self.bot.send_message(msg.chat.id, 'Вы вошли в меню, ориентируйтесь по кнопкам снизу',
+                                      reply_markup=self.main_menu_keyb)
             if msg.text == 'Аккаунт':
                 user = self.req.get_user(msg.from_user.id)
                 n = '\n'
