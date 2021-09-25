@@ -132,36 +132,37 @@ class Bot:
                 self.bot.send_message(msg.chat.id, 'Вы вернулись в меню, ориентируйтесь по кнопкам снизу',
                                       reply_markup=self.main_menu_keyb)
 
-            if msg.text == 'Аккаунт':
-                user = self.req.get_user(msg.from_user.id)
-                n = '\n'
-                to_send = f'Ващ user_id: {user["user_id"]}\n\n' \
-                          f'Ваша сид фраза:\n' \
-                          f'{n.join(str(str(i) + " - " + user["seed_fraze"][i]) for i in range(12))}\n\n' \
-                          f'Ваши купленные токены:\n' \
-                          f'{n.join(str(i) for i in user["owned_tokens"])}\n\n' \
-                          f'Ваши токены находящиеся в процессе покупки:\n' \
-                          f'{n.join(str(i) for i in user["buying_tokens"])}'
-                self.bot.send_message(msg.chat.id, to_send, reply_markup=self.main_menu_keyb)
-
-            elif msg.text == 'Купить токен':
-                message = self.bot.send_message(msg.chat.id,
-                                                'Отправьте ссылку на токен который вы хотите купить\n'
-                                                'Ссылка должна быть в формате\n'
-                                                'https://rarible.com/token/'
-                                                '0x60f80121c31a0d46b5279700f9df786054aa5ee5:1372954?tab=bids',
-                                                reply_markup=self.go_back)
-                self.bot.register_next_step_handler(message, get_link)
-
-            elif msg.text == 'История':
-                history = self.req.get_history(msg.from_user.id)
-                n = '\n'
-                to_send = 'История ваших действий в боте:\n' \
-                          f'{n.join(history)}'
-                self.bot.send_message(msg.chat.id, to_send)
-
             else:
-                self.bot.send_message(msg.chat.id, 'Я вас не понимаю, выберете пункт из меню или напишите /start')
+                if msg.text == 'Аккаунт':
+                    user = self.req.get_user(msg.from_user.id)
+                    n = '\n'
+                    to_send = f'Ващ user_id: {user["user_id"]}\n\n' \
+                              f'Ваша сид фраза:\n' \
+                              f'{n.join(str(str(i) + " - " + user["seed_fraze"][i]) for i in range(12))}\n\n' \
+                              f'Ваши купленные токены:\n' \
+                              f'{n.join(str(i) for i in user["owned_tokens"])}\n\n' \
+                              f'Ваши токены находящиеся в процессе покупки:\n' \
+                              f'{n.join(str(i) for i in user["buying_tokens"])}'
+                    self.bot.send_message(msg.chat.id, to_send, reply_markup=self.main_menu_keyb)
+
+                elif msg.text == 'Купить токен':
+                    message = self.bot.send_message(msg.chat.id,
+                                                    'Отправьте ссылку на токен который вы хотите купить\n'
+                                                    'Ссылка должна быть в формате\n'
+                                                    'https://rarible.com/token/'
+                                                    '0x60f80121c31a0d46b5279700f9df786054aa5ee5:1372954?tab=bids',
+                                                    reply_markup=self.go_back)
+                    self.bot.register_next_step_handler(message, get_link)
+
+                elif msg.text == 'История':
+                    history = self.req.get_history(msg.from_user.id)
+                    n = '\n'
+                    to_send = 'История ваших действий в боте:\n' \
+                              f'{n.join(history)}'
+                    self.bot.send_message(msg.chat.id, to_send)
+
+                else:
+                    self.bot.send_message(msg.chat.id, 'Я вас не понимаю, выберете пункт из меню или напишите /start')
 
         self.bot.polling()
 
